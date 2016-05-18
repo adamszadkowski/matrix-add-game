@@ -12,6 +12,7 @@
 
     <groupId>info.szadkowski.matrix-add-game</groupId>
     <artifactId>matrix-add-game-rest</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Matrix Add Game :: RESTful Services</name>
 
     <dependencies>
