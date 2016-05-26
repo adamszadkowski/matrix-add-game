@@ -1,7 +1,7 @@
 package info.szadkowski.matrix.add.game.core.matrix;
 
-import info.szadkowski.matrix.add.game.core.listener.MatrixChangeEvent;
 import info.szadkowski.matrix.add.game.core.listener.FullMatrixChangeListener;
+import info.szadkowski.matrix.add.game.core.listener.MatrixChangeEvent;
 
 import java.util.*;
 
@@ -14,6 +14,16 @@ public class GameMatrix {
   public GameMatrix(int size) {
     this.matrix = new int[size][size];
     this.size = size;
+  }
+
+  public int[][] getMatrix() {
+    return matrix.clone();
+  }
+
+  //used in tests
+  public void setMatrix(int[][] gameMatrix) {
+    for (int i = 0; i < matrix.length; i++)
+      System.arraycopy(gameMatrix[i], 0, matrix[i], 0, matrix[i].length);
   }
 
   public int get(int x, int y) {

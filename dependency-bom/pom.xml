@@ -26,6 +26,12 @@
             </dependency>
 
             <dependency>
+                <groupId>info.szadkowski.matrix-add-game</groupId>
+                <artifactId>matrix-add-game-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj-core.version}</version>
