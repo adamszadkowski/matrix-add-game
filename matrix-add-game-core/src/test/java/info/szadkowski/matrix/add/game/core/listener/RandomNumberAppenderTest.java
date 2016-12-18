@@ -135,9 +135,10 @@ public class RandomNumberAppenderTest {
 
     @Test
     public void givenTwoEmptyCells_willFillWithEqualProbability() throws Exception {
-      Map<String, Integer> possibilities = roll("|   |   |\n" +
-                                                "| 2 | 4 |", 1000);
+      Map<String, Integer> possibilities = randomize("|   |   |\n" +
+                                                     "| 2 | 4 |", 1000);
 
+      assertThat(possibilities).hasSize(2);
       assertThat(possibilities.get("| 2 |   |\n" +
                                    "| 2 | 4 |")).isBetween(400, 600);
       assertThat(possibilities.get("|   | 2 |\n" +
@@ -146,9 +147,10 @@ public class RandomNumberAppenderTest {
 
     @Test
     public void givenAllEmptyCells_willFillWithEqualProbability() throws Exception {
-      Map<String, Integer> possibilities = roll("|   |   |\n" +
-                                                "|   |   |", 1000);
+      Map<String, Integer> possibilities = randomize("|   |   |\n" +
+                                                     "|   |   |", 1000);
 
+      assertThat(possibilities).hasSize(4);
       assertThat(possibilities.get("| 2 |   |\n" +
                                    "|   |   |")).isBetween(200, 300);
       assertThat(possibilities.get("|   | 2 |\n" +
@@ -159,11 +161,11 @@ public class RandomNumberAppenderTest {
                                    "|   | 2 |")).isBetween(200, 300);
     }
 
-    private Map<String, Integer> roll(String initialMatrix, int rolls) {
+    private Map<String, Integer> randomize(String initialMatrix, int count) {
       Map<String, Integer> possibilities = new HashMap<>();
 
-      for (int i = 0; i < rolls; i++) {
-        String visualized = roll(initialMatrix);
+      for (int i = 0; i < count; i++) {
+        String visualized = randomize(initialMatrix);
         possibilities.computeIfAbsent(visualized, v -> 0);
         possibilities.computeIfPresent(visualized, (v, n) -> n + 1);
       }
@@ -171,7 +173,7 @@ public class RandomNumberAppenderTest {
       return possibilities;
     }
 
-    private String roll(String matrix) {
+    private String randomize(String matrix) {
       parser.parse(matrix);
       appender.update(event);
       return visualizer.visualize();
