@@ -100,6 +100,18 @@ public class MatrixParserTest {
       assertThat(visualizer.visualize()).isEqualTo("|    2 |      |\n" +
                                                    "|      | 2048 |");
     }
+
+    @Test
+    public void givenNonEmptyGameMatrix_willClearEmptyCells() throws Exception {
+      parser.parse("| 2 |   |\n" +
+                   "| 4 | 8 |");
+
+      parser.parse("|   | 2 |\n" +
+                   "|   |   |");
+
+      assertThat(visualizer.visualize()).isEqualTo("|   | 2 |\n" +
+                                                   "|   |   |");
+    }
   }
 
   public class Listeners {

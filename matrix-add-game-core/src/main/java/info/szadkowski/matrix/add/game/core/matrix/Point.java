@@ -4,9 +4,13 @@ public class Point {
   private final int x;
   private final int y;
 
-  Point(int x, int y) {
+  private Point(int x, int y) {
     this.x = x;
     this.y = y;
+  }
+
+  public static Point of(int x, int y) {
+    return new Point(x, y);
   }
 
   public int getX() {
@@ -32,5 +36,10 @@ public class Point {
     int result = x;
     result = 31 * result + y;
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Point{x=%d, y=%d}", x, y);
   }
 }

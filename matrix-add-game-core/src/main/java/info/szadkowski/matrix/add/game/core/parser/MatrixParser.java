@@ -30,10 +30,11 @@ public class MatrixParser {
 
     for (int i = 1; i <= numberCount; i++) {
       String n = fieldsInLine[i].trim();
-      if (!n.isEmpty()) {
-        int x = i - 1;
+      int x = i - 1;
+      if (!n.isEmpty())
         transaction.set(x, y, Integer.parseInt(n));
-      }
+      else
+        transaction.set(x, y, 0);
     }
   }
 

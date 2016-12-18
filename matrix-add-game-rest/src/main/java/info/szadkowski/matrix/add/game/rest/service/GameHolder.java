@@ -1,7 +1,6 @@
 package info.szadkowski.matrix.add.game.rest.service;
 
 import info.szadkowski.matrix.add.game.core.listener.FullMatrixChangeListener;
-import info.szadkowski.matrix.add.game.core.listener.MatrixChangeEvent;
 import info.szadkowski.matrix.add.game.core.matrix.GameMatrix;
 import info.szadkowski.matrix.add.game.core.strategy.AddComputingGameStrategy;
 import info.szadkowski.matrix.add.game.core.strategy.ComputingGameStrategy;
@@ -43,7 +42,7 @@ public class GameHolder {
   }
 
   public void generateRandom() {
-    changeListener.update(new MatrixChangeEvent(gameMatrix));
+    changeListener.update(new FullMatrixChangeListener.MatrixChangeEvent(gameMatrix));
   }
 
   public static Builder builder() {

@@ -1,6 +1,7 @@
 package info.szadkowski.matrix.add.game.rest.configuration;
 
 import info.szadkowski.matrix.add.game.core.listener.FullMatrixChangeListener;
+import info.szadkowski.matrix.add.game.core.listener.RandomNumberAppender;
 import info.szadkowski.matrix.add.game.rest.service.GameHolderFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,6 @@ public class GameConfiguration {
 
   @Bean
   public FullMatrixChangeListener changeListener() {
-    return e -> e.getGameMatrix().set(0, 0, 2);
+    return new RandomNumberAppender();
   }
 }

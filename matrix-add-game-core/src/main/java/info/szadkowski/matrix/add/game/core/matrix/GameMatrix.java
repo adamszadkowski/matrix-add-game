@@ -1,7 +1,6 @@
 package info.szadkowski.matrix.add.game.core.matrix;
 
 import info.szadkowski.matrix.add.game.core.listener.FullMatrixChangeListener;
-import info.szadkowski.matrix.add.game.core.listener.MatrixChangeEvent;
 
 import java.util.*;
 
@@ -57,7 +56,7 @@ public class GameMatrix {
   }
 
   private void applyChanges(Map<Point, Integer> changes) {
-    changes.entrySet().stream()
+    changes.entrySet()
             .forEach(entry -> {
               Point coords = entry.getKey();
               Integer value = entry.getValue();
@@ -68,15 +67,16 @@ public class GameMatrix {
   }
 
   private void notifyAboutChange() {
-    listeners.stream()
-            .forEach(listener -> listener.update(new MatrixChangeEvent(this)));
+    FullMatrixChangeListener.MatrixChangeEvent event = new FullMatrixChangeListener.MatrixChangeEvent(this);
+    listeners
+            .forEach(listener -> listener.update(event));
   }
 
   public class MatrixTransaction {
     private final Map<Point, Integer> changes = new HashMap<>();
 
     public MatrixTransaction set(int x, int y, int n) {
-      changes.put(new Point(x, y), n);
+      changes.put(Point.of(x, y), n);
       return this;
     }
 

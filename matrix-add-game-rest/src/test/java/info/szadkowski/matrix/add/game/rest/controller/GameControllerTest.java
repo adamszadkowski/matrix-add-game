@@ -3,7 +3,6 @@ package info.szadkowski.matrix.add.game.rest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bechte.junit.runners.context.HierarchicalContextRunner;
 import info.szadkowski.matrix.add.game.core.listener.FullMatrixChangeListener;
-import info.szadkowski.matrix.add.game.core.listener.MatrixChangeEvent;
 import info.szadkowski.matrix.add.game.core.matrix.GameMatrix;
 import info.szadkowski.matrix.add.game.core.visualizer.GameMatrixVisualizer;
 import info.szadkowski.matrix.add.game.rest.model.Game;

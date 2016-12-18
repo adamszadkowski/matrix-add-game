@@ -10,7 +10,7 @@ public class PointTest {
 
   @Before
   public void setUp() throws Exception {
-    point = new Point(2, 3);
+    point = Point.of(2, 3);
   }
 
   @Test
@@ -21,14 +21,14 @@ public class PointTest {
 
   @Test
   public void givenDifferentPoint_willNotBeEqual() throws Exception {
-    Point pointToCompare = new Point(0, 0);
+    Point pointToCompare = Point.of(0, 0);
 
     assertThat(point).isNotEqualTo(pointToCompare);
   }
 
   @Test
   public void givenTheSamePoint_willBeEqual() throws Exception {
-    Point pointToCompare = new Point(2, 3);
+    Point pointToCompare = Point.of(2, 3);
 
     assertThat(point).isEqualTo(pointToCompare);
   }
