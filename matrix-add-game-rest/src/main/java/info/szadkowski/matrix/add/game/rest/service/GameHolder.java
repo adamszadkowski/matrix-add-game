@@ -7,11 +7,17 @@ import info.szadkowski.matrix.add.game.core.strategy.ComputingGameStrategy;
 import info.szadkowski.matrix.add.game.core.strategy.GameDelegatingStrategy;
 import info.szadkowski.matrix.add.game.core.strategy.GameStrategy;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 public class GameHolder {
   private final GameMatrix gameMatrix;
   private final FullMatrixChangeListener changeListener;
   private final ComputingGameStrategy addStrategy;
   private final GameStrategy strategy;
+  private final LocalDateTime creationTime;
+  private final Duration expirationTime;
 
   public GameHolder(Builder builder) {
     this.gameMatrix = new GameMatrix(builder.size);
@@ -19,6 +25,8 @@ public class GameHolder {
     this.gameMatrix.addFullMatrixChangeListener(changeListener);
     this.addStrategy = new AddComputingGameStrategy();
     this.strategy = new GameDelegatingStrategy(gameMatrix, addStrategy);
+    this.creationTime = getCurrentTimeInUTC();
+    this.expirationTime = builder.expirationTime;
   }
 
   public int[][] getMatrix() {
@@ -45,12 +53,23 @@ public class GameHolder {
     changeListener.update(new FullMatrixChangeListener.MatrixChangeEvent(gameMatrix));
   }
 
+  public boolean hasExpired() {
+    return creationTime
+            .plus(expirationTime)
+            .isBefore(getCurrentTimeInUTC());
+  }
+
+  private LocalDateTime getCurrentTimeInUTC() {
+    return LocalDateTime.now(ZoneId.of("UTC"));
+  }
+
   public static Builder builder() {
     return new Builder();
   }
 
   public static class Builder {
     private FullMatrixChangeListener changeListener;
+    private Duration expirationTime;
     private int size;
 
     public Builder withChangeListener(FullMatrixChangeListener changeListener) {
@@ -60,6 +79,11 @@ public class GameHolder {
 
     public Builder withSize(int size) {
       this.size = size;
+      return this;
+    }
+
+    public Builder withExpirationTime(Duration expirationTime) {
+      this.expirationTime = expirationTime;
       return this;
     }
 
