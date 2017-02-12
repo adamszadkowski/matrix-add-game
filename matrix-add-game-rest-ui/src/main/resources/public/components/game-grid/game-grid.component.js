@@ -27,20 +27,39 @@
         };
 
         self.matrix = initializeMatrix(self);
+
+        self.update = function (matrix) {
+          var newArray = matrix[0].map(function (col, i) {
+            return matrix.map(function (row) {
+              return row[i]
+            })
+          });
+          self.matrix = [];
+          for (var i = 0; i < newArray.length; i++) {
+            for (var j = 0; j < newArray[i].length; j++) {
+              var el = newArray[i][j];
+              self.matrix.push(createCell(self, el == 0 ? '' : el.toString()));
+            }
+          }
+        };
       }
     });
 
   function initializeMatrix(self) {
     var matrix = [];
     for (var i = 0; i < 16; i++)
-      matrix.push({
-        value: '',
-        color: {
-          background: self.getBackgroundColorFor(''),
-          text: self.getTextColorFor('')
-        }
-      });
+      matrix.push(createCell(self, ''));
     return matrix;
+  }
+
+  function createCell(self, value) {
+    return {
+      value: value,
+      color: {
+        background: self.getBackgroundColorFor(value),
+        text: self.getTextColorFor(value)
+      }
+    };
   }
 
   function setupColorMappings() {
