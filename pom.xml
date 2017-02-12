@@ -26,6 +26,7 @@
         <module>dependency-bom</module>
         <module>matrix-add-game-core</module>
         <module>matrix-add-game-rest</module>
+        <module>matrix-add-game-rest-ui</module>
     </modules>
 
     <dependencyManagement>

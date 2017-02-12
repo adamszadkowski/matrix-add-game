@@ -1,0 +1,11 @@
+<md-content flex layout-padding layout="row" layout-fill layout-align="center center">
+    <md-content flex="33" ng-style="{'background-color': '#BBAA9F'}">
+        <md-grid-list md-cols="4" md-row-height="1:1" md-gutter="0.5em">
+            <md-grid-tile
+                    ng-repeat="n in $ctrl.matrix track by $index"
+                    ng-style="{'background-color':'{{n.color.background}}','color':'{{n.color.text}}'}">{{n.value}}
+            </md-grid-tile>
+        </md-grid-list>
+    </md-content>
+</md-content>
+

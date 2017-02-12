@@ -13,6 +13,10 @@
         <platform-bom.version>2.0.3.RELEASE</platform-bom.version>
         <assertj-core.version>3.3.0</assertj-core.version>
         <junit-hierarchicalcontextrunner.version>4.12.1</junit-hierarchicalcontextrunner.version>
+        <angularjs.version>1.6.1</angularjs.version>
+        <angular-material.version>1.1.3</angular-material.version>
+        <angular-material-icons.version>0.7.1</angular-material-icons.version>
+        <jasmine.version>2.5.0</jasmine.version>
     </properties>
 
     <dependencyManagement>
@@ -26,12 +30,6 @@
             </dependency>
 
             <dependency>
-                <groupId>info.szadkowski.matrix-add-game</groupId>
-                <artifactId>matrix-add-game-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj-core.version}</version>
@@ -40,6 +38,47 @@
                 <groupId>de.bechte.junit</groupId>
                 <artifactId>junit-hierarchicalcontextrunner</artifactId>
                 <version>${junit-hierarchicalcontextrunner.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>angularjs</artifactId>
+                <version>${angularjs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars.bower</groupId>
+                <artifactId>angular-mocks</artifactId>
+                <version>${angularjs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars.bower</groupId>
+                <artifactId>angular-animate</artifactId>
+                <version>${angularjs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars.bower</groupId>
+                <artifactId>angular-aria</artifactId>
+                <version>${angularjs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars.bower</groupId>
+                <artifactId>angular-messages</artifactId>
+                <version>${angularjs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>angular-material</artifactId>
+                <version>${angular-material.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars.bower</groupId>
+                <artifactId>angular-material-icons</artifactId>
+                <version>${angular-material-icons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>jasmine</artifactId>
+                <version>${jasmine.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
