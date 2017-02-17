@@ -8,6 +8,7 @@
       controller: function () {
         var self = this;
 
+        self.matrix = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
         self.colorMapping = setupColorMappings();
 
         self.getBackgroundColorFor = function (value) {
@@ -20,37 +21,29 @@
         };
 
         self.getTextColorFor = function (value) {
-          if (value == '' || value < 8)
-            return self.colorMapping.text.dark;
-          else
-            return self.colorMapping.text.light;
+          return value == '' || value < 8 ? self.colorMapping.text.dark : self.colorMapping.text.light;
         };
-
-        self.matrix = initializeMatrix(self);
 
         self.update = function (matrix) {
           var newArray = matrix[0].map(function (col, i) {
             return matrix.map(function (row) {
-              return row[i]
+              return row[i];
             })
           });
-          self.matrix = [];
+          self.internalMatrix = [];
           for (var i = 0; i < newArray.length; i++) {
             for (var j = 0; j < newArray[i].length; j++) {
               var el = newArray[i][j];
-              self.matrix.push(createCell(self, el == 0 ? '' : el.toString()));
+              self.internalMatrix.push(createCell(self, el == 0 ? '' : el.toString()));
             }
           }
         };
+        self.update(self.matrix);
+      },
+      bindings: {
+        matrix: '<'
       }
     });
-
-  function initializeMatrix(self) {
-    var matrix = [];
-    for (var i = 0; i < 16; i++)
-      matrix.push(createCell(self, ''));
-    return matrix;
-  }
 
   function createCell(self, value) {
     return {

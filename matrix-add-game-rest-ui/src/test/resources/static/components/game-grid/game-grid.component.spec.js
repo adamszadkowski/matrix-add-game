@@ -31,8 +31,8 @@
       });
 
       it('should initialize empty matrix', function () {
-        expect($ctrl.matrix.length).toBe(16);
-        $ctrl.matrix.forEach(function (e) {
+        expect($ctrl.internalMatrix.length).toBe(16);
+        $ctrl.internalMatrix.forEach(function (e) {
           expect(e).toEqual({
             value: '',
             color: {
@@ -70,7 +70,7 @@
         var text2 = $ctrl.getTextColorFor('2');
         var text4096 = $ctrl.getTextColorFor('4096');
         $ctrl.update([[2, 0, 0, 2], [0, 0, 0, 0], [0, 0, 0, 2], [0, 0, 0, 4096]]);
-        expect($ctrl.matrix).toEqual([
+        expect($ctrl.internalMatrix).toEqual([
           {value: '2', color: {background: background2, text: text2}},
           {value: '', color: {background: background, text: text}},
           {value: '', color: {background: background, text: text}},
