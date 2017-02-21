@@ -1,6 +1,7 @@
 <div flex layout="row" layout-align="center center" layout-fill>
     <div flex="66" layout-padding layout="row" layout-align="center start">
-        <game-grid flex="50" layout-padding></game-grid>
+        <game-grid matrix="$ctrl.model" flex="50" layout-padding></game-grid>
+        <md-button class="md-raised md-primary" ng-click="$ctrl.update()">New Game</md-button>
         <game-control flex="50"></game-control>
     </div>
 </div>

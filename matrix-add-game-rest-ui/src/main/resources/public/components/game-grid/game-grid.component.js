@@ -3,56 +3,70 @@
 
   angular
     .module('gameGrid')
-    .component('gameGrid', {
-      templateUrl: 'components/game-grid/game-grid.template.html',
-      controller: function () {
-        var self = this;
+    .directive('gameGrid', function () {
+      return {
+        restrict: 'E',
+        scope: {
+          matrix: '<'
+        },
+        templateUrl: 'components/game-grid/game-grid.template.html',
+        link: function (scope) {
+          if (scope.matrix === undefined)
+            scope.matrix = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
-        self.matrix = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-        self.colorMapping = setupColorMappings();
+          scope.internalMatrix = convertToInternal(scope.matrix);
+          scope.getCellStyle = getCellStyle;
 
-        self.getBackgroundColorFor = function (value) {
-          var colors = self.colorMapping.background;
-          for (var i = 0; i < colors.length; i++)
-            if (colors[i].value == value)
-              return colors[i].color;
-
-          return self.getBackgroundColorFor(2048);
-        };
-
-        self.getTextColorFor = function (value) {
-          return value == '' || value < 8 ? self.colorMapping.text.dark : self.colorMapping.text.light;
-        };
-
-        self.update = function (matrix) {
-          var newArray = matrix[0].map(function (col, i) {
-            return matrix.map(function (row) {
-              return row[i];
-            })
+          scope.$watch('matrix', function (value) {
+            scope.internalMatrix = convertToInternal(value);
           });
-          self.internalMatrix = [];
-          for (var i = 0; i < newArray.length; i++) {
-            for (var j = 0; j < newArray[i].length; j++) {
-              var el = newArray[i][j];
-              self.internalMatrix.push(createCell(self, el == 0 ? '' : el.toString()));
-            }
-          }
-        };
-        self.update(self.matrix);
-      },
-      bindings: {
-        matrix: '<'
+        }
       }
     });
 
-  function createCell(self, value) {
+  var colorMapping = setupColorMappings();
+
+  function convertToInternal(matrix) {
+    var transposed = transposeMatrix(matrix);
+
+    var internalMatrix = [];
+    for (var i = 0; i < transposed.length; i++)
+      for (var j = 0; j < transposed[i].length; j++)
+        internalMatrix.push(createCell(transposed[i][j]));
+
+    return internalMatrix;
+  }
+
+  function getCellStyle(cell) {
     return {
-      value: value,
-      color: {
-        background: self.getBackgroundColorFor(value),
-        text: self.getTextColorFor(value)
-      }
+      'background-color': getBackgroundColorFor(cell),
+      'color': getTextColorFor(cell)
     };
+  }
+
+  function transposeMatrix(matrix) {
+    return matrix[0].map(function (col, i) {
+      return matrix.map(function (row) {
+        return row[i];
+      })
+    });
+  }
+
+  function getBackgroundColorFor(value) {
+    var colors = colorMapping.background;
+    for (var i = 0; i < colors.length; i++)
+      if (colors[i].value == value)
+        return colors[i].color;
+
+    return getBackgroundColorFor(2048);
+  }
+
+  function getTextColorFor(value) {
+    return value == '' || value < 8 ? colorMapping.text.dark : colorMapping.text.light;
+  }
+
+  function createCell(el) {
+    return el == 0 ? '' : el.toString();
   }
 
   function setupColorMappings() {
@@ -77,4 +91,5 @@
       }
     };
   }
+
 })(angular);

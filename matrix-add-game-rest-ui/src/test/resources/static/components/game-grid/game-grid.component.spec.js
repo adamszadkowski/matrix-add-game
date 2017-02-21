@@ -3,48 +3,22 @@
 
   describe("gameGrid", function () {
     beforeEach(module('gameGrid'));
-
-    var $ctrl;
-    beforeEach(inject(function ($componentController) {
-      $ctrl = $componentController('gameGrid');
-    }));
+    var element;
 
     describe("initialization", function () {
-      it("should have setup background colors", function () {
-        expect($ctrl.colorMapping.background).toContain({value: '', color: '#CCC0B3'});
-        expect($ctrl.colorMapping.background).toContain({value: '2', color: '#EEE4DA'});
-        expect($ctrl.colorMapping.background).toContain({value: '4', color: '#EDE0C8'});
-        expect($ctrl.colorMapping.background).toContain({value: '8', color: '#F2B179'});
-        expect($ctrl.colorMapping.background).toContain({value: '16', color: '#f59563'});
-        expect($ctrl.colorMapping.background).toContain({value: '32', color: '#f67c5f'});
-        expect($ctrl.colorMapping.background).toContain({value: '64', color: '#f65e3b'});
-        expect($ctrl.colorMapping.background).toContain({value: '128', color: '#edcf72'});
-        expect($ctrl.colorMapping.background).toContain({value: '256', color: '#edcc61'});
-        expect($ctrl.colorMapping.background).toContain({value: '512', color: '#edc850'});
-        expect($ctrl.colorMapping.background).toContain({value: '1024', color: '#edc53f'});
-        expect($ctrl.colorMapping.background).toContain({value: '2048', color: '#edc22e'});
-      });
+      it('should initialize empty matrix', inject(function ($rootScope, $compile) {
+        var scope = $rootScope.$new();
+        element = $compile(angular.element('<game-grid matrix="matrix"></game-grid>'))(scope);
 
-      it("should have setup text colors", function () {
-        expect($ctrl.colorMapping.text.dark).toBe('#776e65');
-        expect($ctrl.colorMapping.text.light).toBe('#f9f6f2');
-      });
-
-      it('should initialize empty matrix', function () {
-        expect($ctrl.internalMatrix.length).toBe(16);
-        $ctrl.internalMatrix.forEach(function (e) {
-          expect(e).toEqual({
-            value: '',
-            color: {
-              background: '#CCC0B3',
-              text: '#776e65'
-            }
-          })
+        var internalScope = element.isolateScope();
+        expect(internalScope.internalMatrix.length).toBe(16);
+        internalScope.internalMatrix.forEach(function (e) {
+          expect(e).toEqual('')
         });
-      });
+      }));
     });
 
-    describe("conversions", function () {
+   /* describe("conversions", function () {
       it("should get correct background color for number", function () {
         expect($ctrl.getBackgroundColorFor('')).toBe('#CCC0B3');
         expect($ctrl.getBackgroundColorFor('2')).toBe('#EEE4DA');
@@ -89,7 +63,7 @@
           {value: '4096', color: {background: background4096, text: text4096}}
         ]);
       });
-    });
+    });*/
   });
 
 })();
