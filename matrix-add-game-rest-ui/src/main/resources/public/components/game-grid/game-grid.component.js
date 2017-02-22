@@ -3,25 +3,26 @@
 
   angular
     .module('gameGrid')
-    .directive('gameGrid', function () {
-      return {
-        restrict: 'E',
-        scope: {
-          matrix: '<'
-        },
-        templateUrl: 'components/game-grid/game-grid.template.html',
-        link: function (scope) {
-          if (scope.matrix === undefined)
-            scope.matrix = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    .component('gameGrid', {
+      templateUrl: 'components/game-grid/game-grid.template.html',
+      bindings: {
+        matrix: '<'
+      },
+      controller: ['$scope', function ($scope) {
+        var self = this;
+        if (self.matrix === undefined)
+          self.matrix = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
-          scope.internalMatrix = convertToInternal(scope.matrix);
-          scope.getCellStyle = getCellStyle;
+        self.internalMatrix = convertToInternal(self.matrix);
+        self.getCellStyle = getCellStyle;
 
-          scope.$watch('matrix', function (value) {
-            scope.internalMatrix = convertToInternal(value);
-          });
-        }
-      }
+        $scope.$watch(function () {
+          return self.matrix;
+        }, function (value) {
+          if (isCompatible(value))
+            self.internalMatrix = convertToInternal(value);
+        });
+      }]
     });
 
   var colorMapping = setupColorMappings();
@@ -42,6 +43,21 @@
       'background-color': getBackgroundColorFor(cell),
       'color': getTextColorFor(cell)
     };
+  }
+
+  function isCompatible(value) {
+    if (!isArrayOfLengthFour(value))
+      return false;
+
+    for (var i = 0; i < 4; ++i)
+      if (!isArrayOfLengthFour(value[i]))
+        return false;
+
+    return true;
+  }
+
+  function isArrayOfLengthFour(value) {
+    return Array.isArray(value) && value.length == 4;
   }
 
   function transposeMatrix(matrix) {

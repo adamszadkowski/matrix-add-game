@@ -3,67 +3,62 @@
 
   describe("gameGrid", function () {
     beforeEach(module('gameGrid'));
-    var element;
+
+    var $ctrl;
+    beforeEach(inject(function ($componentController) {
+      $ctrl = $componentController('gameGrid');
+    }));
 
     describe("initialization", function () {
-      it('should initialize empty matrix', inject(function ($rootScope, $compile) {
-        var scope = $rootScope.$new();
-        element = $compile(angular.element('<game-grid matrix="matrix"></game-grid>'))(scope);
-
-        var internalScope = element.isolateScope();
-        expect(internalScope.internalMatrix.length).toBe(16);
-        internalScope.internalMatrix.forEach(function (e) {
-          expect(e).toEqual('')
-        });
-      }));
-    });
-
-   /* describe("conversions", function () {
-      it("should get correct background color for number", function () {
-        expect($ctrl.getBackgroundColorFor('')).toBe('#CCC0B3');
-        expect($ctrl.getBackgroundColorFor('2')).toBe('#EEE4DA');
-        expect($ctrl.getBackgroundColorFor('2048')).toBe('#edc22e');
-        expect($ctrl.getBackgroundColorFor('4096')).toBe('#edc22e');
+      it("should have setup background colors", function () {
+        expect($ctrl.getCellStyle('')).toEqual({'background-color': '#CCC0B3', 'color': '#776e65'});
+        expect($ctrl.getCellStyle('2')).toEqual({'background-color': '#EEE4DA', 'color': '#776e65'});
+        expect($ctrl.getCellStyle('4')).toEqual({'background-color': '#EDE0C8', 'color': '#776e65'});
+        expect($ctrl.getCellStyle('8')).toEqual({'background-color': '#F2B179', 'color': '#f9f6f2'});
+        expect($ctrl.getCellStyle('16')).toEqual({'background-color': '#f59563', 'color': '#f9f6f2'});
+        expect($ctrl.getCellStyle('32')).toEqual({'background-color': '#f67c5f', 'color': '#f9f6f2'});
+        expect($ctrl.getCellStyle('64')).toEqual({'background-color': '#f65e3b', 'color': '#f9f6f2'});
+        expect($ctrl.getCellStyle('128')).toEqual({'background-color': '#edcf72', 'color': '#f9f6f2'});
+        expect($ctrl.getCellStyle('256')).toEqual({'background-color': '#edcc61', 'color': '#f9f6f2'});
+        expect($ctrl.getCellStyle('512')).toEqual({'background-color': '#edc850', 'color': '#f9f6f2'});
+        expect($ctrl.getCellStyle('1024')).toEqual({'background-color': '#edc53f', 'color': '#f9f6f2'});
+        expect($ctrl.getCellStyle('2048')).toEqual({'background-color': '#edc22e', 'color': '#f9f6f2'});
       });
 
-      it("should get correct text color for number", function () {
-        expect($ctrl.getTextColorFor('')).toBe('#776e65');
-        expect($ctrl.getTextColorFor('2')).toBe('#776e65');
-        expect($ctrl.getTextColorFor('4')).toBe('#776e65');
-        expect($ctrl.getTextColorFor('8')).toBe('#f9f6f2');
-        expect($ctrl.getTextColorFor('4096')).toBe('#f9f6f2');
+      it('should initialize empty matrix', function () {
+        expect($ctrl.internalMatrix.length).toBe(16);
+        $ctrl.internalMatrix.forEach(function (e) {
+          expect(e).toEqual('')
+        });
       });
     });
 
     describe("api", function () {
-      it("should setup correctly matrix on input data", function () {
-        var background = $ctrl.getBackgroundColorFor('');
-        var background2 = $ctrl.getBackgroundColorFor('2');
-        var background4096 = $ctrl.getBackgroundColorFor('4096');
-        var text = $ctrl.getTextColorFor('');
-        var text2 = $ctrl.getTextColorFor('2');
-        var text4096 = $ctrl.getTextColorFor('4096');
-        $ctrl.update([[2, 0, 0, 2], [0, 0, 0, 0], [0, 0, 0, 2], [0, 0, 0, 4096]]);
-        expect($ctrl.internalMatrix).toEqual([
-          {value: '2', color: {background: background2, text: text2}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '', color: {background: background, text: text}},
-          {value: '2', color: {background: background2, text: text2}},
-          {value: '', color: {background: background, text: text}},
-          {value: '2', color: {background: background2, text: text2}},
-          {value: '4096', color: {background: background4096, text: text4096}}
-        ]);
+      var scope,
+        element;
+
+      beforeEach(inject(function ($rootScope, $compile, $templateCache) {
+        $templateCache.put('components/game-grid/game-grid.template.html', 'empty');
+        scope = $rootScope.$new();
+        element = angular.element('<game-grid matrix="matrix"></game-grid>');
+        element = $compile(element)(scope);
+        scope.$digest();
+      }));
+
+      it("should have empty matrix", function () {
+        element.isolateScope().$ctrl.internalMatrix.forEach(function (e) {
+          expect(e).toEqual('');
+        });
       });
-    });*/
+
+      it("should setup correctly matrix on input data", function () {
+        scope.matrix = [[2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]];
+        scope.$apply();
+        element.isolateScope().$ctrl.internalMatrix.forEach(function (e) {
+          expect(e).toEqual('2');
+        });
+      });
+    });
   });
 
 })();
