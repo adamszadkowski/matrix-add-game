@@ -1,5 +1,5 @@
 (function (angular) {
   'use strict';
 
-  angular.module('gameLogic', []);
+  angular.module('gameLogic', ['ngResource']);
 })(angular);
