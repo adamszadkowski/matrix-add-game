@@ -11,11 +11,27 @@
         GameLogic.getMatrix(function (matrix) {
           self.model = matrix;
         });
-        this.update = function () {
-          GameLogic.moveRight(function (matrix) {
-            self.model = matrix;
-          });
+
+        self.callback = function (matrix) {
+          self.model = matrix;
         };
+
+        angular.element(document).bind('keyup', function (e) {
+          switch (e.keyCode) {
+            case 38:
+              GameLogic.moveUp(self.callback);
+              break;
+            case 40:
+              GameLogic.moveDown(self.callback);
+              break;
+            case 37:
+              GameLogic.moveLeft(self.callback);
+              break;
+            case 39:
+              GameLogic.moveRight(self.callback);
+              break;
+          }
+        });
       }]
     });
 
