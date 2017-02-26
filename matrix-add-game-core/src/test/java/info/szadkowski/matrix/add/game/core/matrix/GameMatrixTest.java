@@ -48,21 +48,52 @@ public class GameMatrixTest {
   }
 
   public class ListenerNotification {
-    final List<GameMatrix> result = new ArrayList<>();
+    private List<GameMatrix> result;
 
     @Before
     public void setUp() throws Exception {
-      for (int i = 0; i < 2; i++)
-        matrix.addFullMatrixChangeListener(event -> result.add(event.getGameMatrix()));
+      result = new ArrayList<>();
+      matrix.addFullMatrixChangeListener(event -> result.add(event.getGameMatrix()));
     }
 
     @Test
-    public void shouldNotifyOnTransaction() throws Exception {
+    public void shouldNotNotifyOnEmptyTransaction() throws Exception {
       matrix.createTransaction().finalizeTransaction();
+
+      assertThat(result).isEmpty();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @Test
+    public void givenTransactionWhichDoesNotChangeMatrix_willNotNotify() throws Exception {
+      matrix.createTransaction()
+                .set(0, 0, matrix.get(0, 0))
+                .set(0, 1, matrix.get(0, 1))
+                .set(1, 1, matrix.get(1, 1))
+              .finalizeTransaction();
+
+      assertThat(result).isEmpty();
+    }
+
+
+    @Test
+    public void givenTransactionWhichChangesMatrix_willNotify() throws Exception {
+      matrix.createTransaction()
+                .set(0, 0, matrix.get(0, 0) + 1)
+                .set(0, 1, matrix.get(0, 1) + 1)
+                .set(1, 1, matrix.get(1, 1) + 1)
+              .finalizeTransaction();
+
+      assertThat(result).containsExactly(matrix);
+    }
+
+    @Test
+    public void shouldNotifyAllListeners() throws Exception {
+      matrix.addFullMatrixChangeListener(event -> result.add(event.getGameMatrix()));
+
+      matrix.createTransaction()
+                .set(0, 0, matrix.get(0, 0) + 1)
+              .finalizeTransaction();
+
       assertThat(result).containsExactly(matrix, matrix);
     }
   }

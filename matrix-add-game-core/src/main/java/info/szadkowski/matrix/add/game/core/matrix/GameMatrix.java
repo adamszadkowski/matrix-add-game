@@ -56,14 +56,17 @@ public class GameMatrix {
   }
 
   private void applyChanges(Map<Point, Integer> changes) {
-    changes.entrySet()
-            .forEach(entry -> {
-              Point coords = entry.getKey();
-              Integer value = entry.getValue();
-              matrix[coords.getX()][coords.getY()] = value;
-            });
+    boolean shouldNotify = false;
+    
+    for (Map.Entry<Point, Integer> entry : changes.entrySet()) {
+      Point coords = entry.getKey();
+      Integer value = entry.getValue();
+      shouldNotify = shouldNotify || matrix[coords.getX()][coords.getY()] != value;
+      matrix[coords.getX()][coords.getY()] = value;
+    }
 
-    notifyAboutChange();
+    if (shouldNotify)
+      notifyAboutChange();
   }
 
   private void notifyAboutChange() {
