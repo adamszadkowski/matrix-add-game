@@ -1,0 +1,7 @@
+server:
+  port: 80
+
+game:
+  size: 4
+  max-game-count: 30
+  expiration-timeout: P1D

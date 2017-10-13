@@ -3,15 +3,14 @@ package info.szadkowski.matrix.add.game.rest.controller;
 import info.szadkowski.matrix.add.game.rest.model.Game;
 import info.szadkowski.matrix.add.game.rest.model.GameId;
 import info.szadkowski.matrix.add.game.rest.model.MoveDirection;
+import info.szadkowski.matrix.add.game.rest.properties.GameProperties;
 import info.szadkowski.matrix.add.game.rest.service.GameHolder;
 import info.szadkowski.matrix.add.game.rest.service.GameHolderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -21,13 +20,13 @@ import java.util.concurrent.ConcurrentMap;
 public class GameController {
   private final ConcurrentMap<String, GameHolder> cache = new ConcurrentHashMap<>();
 
+  private final GameProperties gameProperties;
   private final GameHolderFactory gameHolderFactory;
 
-  private Duration expirationTime;
-  private int count;
-
   @Autowired
-  public GameController(GameHolderFactory gameHolderFactory) {
+  public GameController(GameProperties gameProperties,
+                        GameHolderFactory gameHolderFactory) {
+    this.gameProperties = gameProperties;
     this.gameHolderFactory = gameHolderFactory;
   }
 
@@ -35,7 +34,7 @@ public class GameController {
   public GameId createNewGameId() {
     clearExpiredGamesIfNeeded();
     String id = UUID.randomUUID().toString();
-    GameHolder gameHolder = gameHolderFactory.create(expirationTime);
+    GameHolder gameHolder = gameHolderFactory.create(gameProperties.getExpirationTimeout());
     cache.put(id, gameHolder);
     for (int i = 0; i < 2; i++)
       gameHolder.generateRandom();
@@ -55,21 +54,12 @@ public class GameController {
   }
 
   private void clearExpiredGamesIfNeeded() {
-    if (cache.size() >= count)
+    int maxGameCount = gameProperties.getMaxGameCount();
+    if (cache.size() >= maxGameCount)
       cache.entrySet().removeIf(next -> next.getValue().hasExpired());
 
-    if (cache.size() >= count)
+    if (cache.size() >= maxGameCount)
       throw new CannotCreateGameException("Cannot create new game");
-  }
-
-  @Value("${game.expiration-time-in-seconds}")
-  public void setExpirationTimeInSeconds(long expirationTime) {
-    this.expirationTime = Duration.ofSeconds(expirationTime);
-  }
-
-  @Value("${game.max-game-count}")
-  public void setMaxGameCount(int count) {
-    this.count = count;
   }
 
   @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE, reason = "Too many games")

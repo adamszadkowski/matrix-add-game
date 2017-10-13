@@ -7,6 +7,7 @@ import info.szadkowski.matrix.add.game.core.matrix.GameMatrix;
 import info.szadkowski.matrix.add.game.core.visualizer.GameMatrixVisualizer;
 import info.szadkowski.matrix.add.game.rest.model.Game;
 import info.szadkowski.matrix.add.game.rest.model.GameId;
+import info.szadkowski.matrix.add.game.rest.properties.GameProperties;
 import info.szadkowski.matrix.add.game.rest.service.GameHolderFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,17 +27,18 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @RunWith(HierarchicalContextRunner.class)
 public class GameControllerTest {
-  private static final int GAME_MATRIX_SIZE = 4;
-
+  private GameProperties gameProperties;
   private MockMvc mockMvc;
-  private GameController gameController;
 
   @Before
   public void setUp() throws Exception {
+    gameProperties = new GameProperties();
+    gameProperties.setSize(4);
+    gameProperties.setExpirationTimeout(Duration.ofDays(1));
+    gameProperties.setMaxGameCount(30);
+
     FullMatrixChangeListener changeListener = new PseudoRandomGenerator();
-    gameController = new GameController(new GameHolderFactory(changeListener, GAME_MATRIX_SIZE));
-    gameController.setExpirationTimeInSeconds(Duration.ofDays(1).getSeconds());
-    gameController.setMaxGameCount(30);
+    GameController gameController = new GameController(gameProperties, new GameHolderFactory(gameProperties, changeListener));
     mockMvc = standaloneSetup(gameController)
             .setControllerAdvice(new ExceptionHandlingController())
             .build();
@@ -135,7 +137,7 @@ public class GameControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andReturn().getResponse().getContentAsString();
 
-        GameMatrix gameMatrix = new GameMatrix(GAME_MATRIX_SIZE);
+        GameMatrix gameMatrix = new GameMatrix(gameProperties.getSize());
         gameMatrix.setMatrix(mapper.readValue(s, Game.class).getGameMatrix());
         return new GameMatrixVisualizer(gameMatrix);
       }
@@ -144,7 +146,7 @@ public class GameControllerTest {
     public class Expiration {
       @Test
       public void givenZeroGamesAllowed_willFail() throws Exception {
-        gameController.setMaxGameCount(0);
+        gameProperties.setMaxGameCount(0);
         mockMvc.perform(get("/v1/game"))
                 .andExpect(status().isServiceUnavailable());
       }
@@ -152,12 +154,12 @@ public class GameControllerTest {
       public class SingleGameAllowed {
         @Before
         public void setUp() throws Exception {
-          gameController.setMaxGameCount(1);
+          gameProperties.setMaxGameCount(1);
         }
 
         @Test
         public void givenLongExpireTime_willNotExpireInThatTime() throws Exception {
-          gameController.setExpirationTimeInSeconds(Duration.ofDays(1).getSeconds());
+          gameProperties.setExpirationTimeout(Duration.ofDays(1));
           String id = getNewGameId();
           mockMvc.perform(get("/v1/game"))
                   .andExpect(status().isServiceUnavailable())
@@ -170,7 +172,7 @@ public class GameControllerTest {
 
         @Test
         public void givenShortExpireTime_willExpire() throws Exception {
-          gameController.setExpirationTimeInSeconds(Duration.ofMillis(0).getSeconds());
+          gameProperties.setExpirationTimeout(Duration.ofMillis(0));
           String id = getNewGameId();
           mockMvc.perform(get("/v1/game"))
                   .andExpect(status().isOk());
@@ -189,7 +191,7 @@ public class GameControllerTest {
   }
 
   private static class PseudoRandomGenerator implements FullMatrixChangeListener {
-    public boolean isFirst = true;
+    boolean isFirst = true;
 
     @Override
     public void update(MatrixChangeEvent e) {
