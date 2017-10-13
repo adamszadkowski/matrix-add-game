@@ -10,7 +10,7 @@
     <name>Matrix Add Game :: Dependency BOM</name>
 
     <properties>
-        <platform-bom.version>2.0.3.RELEASE</platform-bom.version>
+        <platform-bom.version>Brussels-SR5</platform-bom.version>
         <assertj-core.version>3.3.0</assertj-core.version>
         <junit-hierarchicalcontextrunner.version>4.12.1</junit-hierarchicalcontextrunner.version>
         <angularjs.version>1.6.1</angularjs.version>
