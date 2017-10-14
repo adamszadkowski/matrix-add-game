@@ -11,6 +11,7 @@
 
     <properties>
         <platform-bom.version>Brussels-SR5</platform-bom.version>
+        <junit.jupiter.version>5.0.1</junit.jupiter.version>
         <assertj-core.version>3.3.0</assertj-core.version>
         <junit-hierarchicalcontextrunner.version>4.12.1</junit-hierarchicalcontextrunner.version>
         <angularjs.version>1.6.1</angularjs.version>
@@ -27,6 +28,17 @@
                 <version>${platform-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.jupiter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.jupiter.version}</version>
             </dependency>
 
             <dependency>

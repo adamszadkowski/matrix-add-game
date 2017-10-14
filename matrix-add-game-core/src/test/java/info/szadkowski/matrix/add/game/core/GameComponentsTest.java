@@ -5,29 +5,27 @@ import info.szadkowski.matrix.add.game.core.parser.MatrixParser;
 import info.szadkowski.matrix.add.game.core.strategy.AddComputingGameStrategy;
 import info.szadkowski.matrix.add.game.core.strategy.GameDelegatingStrategy;
 import info.szadkowski.matrix.add.game.core.visualizer.GameMatrixVisualizer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GameComponentsTest {
+class GameComponentsTest {
   private GameMatrix matrix;
   private MatrixParser parser;
   private GameMatrixVisualizer visualizer;
-  private AddComputingGameStrategy addStrategy;
   private GameDelegatingStrategy strategy;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     matrix = new GameMatrix(4);
     parser = new MatrixParser(matrix);
     visualizer = new GameMatrixVisualizer(matrix);
-    addStrategy = new AddComputingGameStrategy();
-    strategy = new GameDelegatingStrategy(matrix, addStrategy);
+    strategy = new GameDelegatingStrategy(matrix, new AddComputingGameStrategy());
   }
 
   @Test
-  public void integration() throws Exception {
+  void integration() throws Exception {
     parser.parse(
             "| 2 |   | 2 |   |\n" +
             "|   |   |   |   |\n" +
@@ -68,7 +66,7 @@ public class GameComponentsTest {
   }
 
   @Test
-  public void shouldAddNewNumbers() throws Exception {
+  void shouldAddNewNumbers() throws Exception {
     parser.parse(
             "| 2 |   |   |   |\n" +
             "|   |   |   |   |\n" +

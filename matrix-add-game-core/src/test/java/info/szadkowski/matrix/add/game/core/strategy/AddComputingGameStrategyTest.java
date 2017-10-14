@@ -1,33 +1,33 @@
 package info.szadkowski.matrix.add.game.core.strategy;
 
-import de.bechte.junit.runners.context.HierarchicalContextRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(HierarchicalContextRunner.class)
-public class AddComputingGameStrategyTest {
+class AddComputingGameStrategyTest {
   private ComputingGameStrategy strategy;
   private List<Integer> input;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     strategy = new AddComputingGameStrategy();
   }
 
-  public class Empty {
-    @Before
-    public void setUp() throws Exception {
+  @Nested
+  class Empty {
+
+    @BeforeEach
+    void setUp() throws Exception {
       input = input();
     }
 
     @Test
-    public void shouldNotChangeOnMovement() throws Exception {
+    void shouldNotChangeOnMovement() throws Exception {
       assertMoveLeft();
       assertMoveRight();
       assertMoveUp();
@@ -35,14 +35,16 @@ public class AddComputingGameStrategyTest {
     }
   }
 
-  public class SingleNumber {
-    @Before
-    public void setUp() throws Exception {
+  @Nested
+  class SingleNumber {
+
+    @BeforeEach
+    void setUp() throws Exception {
       input = input(2);
     }
 
     @Test
-    public void shouldNotChangeOnMovement() throws Exception {
+    void shouldNotChangeOnMovement() throws Exception {
       assertMoveLeft(2);
       assertMoveRight(2);
       assertMoveUp(2);
@@ -50,14 +52,16 @@ public class AddComputingGameStrategyTest {
     }
   }
 
-  public class DifferentNumbers {
-    @Before
-    public void setUp() throws Exception {
+  @Nested
+  class DifferentNumbers {
+
+    @BeforeEach
+    void setUp() throws Exception {
       input = input(2, 4, 8);
     }
 
     @Test
-    public void shouldNotChangeOnMovement() throws Exception {
+    void shouldNotChangeOnMovement() throws Exception {
       assertMoveLeft(2, 4, 8);
       assertMoveRight(2, 4, 8);
       assertMoveUp(2, 4, 8);
@@ -65,14 +69,16 @@ public class AddComputingGameStrategyTest {
     }
   }
 
-  public class TheSameNumbers {
-    @Before
-    public void setUp() throws Exception {
+  @Nested
+  class TheSameNumbers {
+
+    @BeforeEach
+    void setUp() throws Exception {
       input = input(2, 2);
     }
 
     @Test
-    public void shouldMergeTwoNumbers() throws Exception {
+    void shouldMergeTwoNumbers() throws Exception {
       assertMoveLeft(4);
       assertMoveRight(4);
       assertMoveUp(4);
@@ -80,14 +86,16 @@ public class AddComputingGameStrategyTest {
     }
   }
 
-  public class CorrectOrderAdding {
-    @Before
-    public void setUp() throws Exception {
+  @Nested
+  class CorrectOrderAdding {
+
+    @BeforeEach
+    void setUp() throws Exception {
       input = input(2, 2, 2);
     }
 
     @Test
-    public void shouldMergeTwoNumbers() throws Exception {
+    void shouldMergeTwoNumbers() throws Exception {
       assertMoveLeft(4, 2);
       assertMoveRight(2, 4);
       assertMoveUp(4, 2);
@@ -95,14 +103,16 @@ public class AddComputingGameStrategyTest {
     }
   }
 
-  public class Complex {
-    @Before
-    public void setUp() throws Exception {
+  @Nested
+  class Complex {
+
+    @BeforeEach
+    void setUp() throws Exception {
       input = input(2, 2, 2, 2, 2, 4, 4, 2, 8, 8);
     }
 
     @Test
-    public void shouldMergeNumbers() throws Exception {
+    void shouldMergeNumbers() throws Exception {
       assertMoveLeft(4, 4, 2, 8, 2, 16);
       assertMoveRight(2, 4, 4, 8, 2, 16);
       assertMoveUp(4, 4, 2, 8, 2, 16);

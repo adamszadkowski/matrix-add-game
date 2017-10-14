@@ -1,7 +1,6 @@
 package info.szadkowski.matrix.add.game.rest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bechte.junit.runners.context.HierarchicalContextRunner;
 import info.szadkowski.matrix.add.game.core.listener.FullMatrixChangeListener;
 import info.szadkowski.matrix.add.game.core.matrix.GameMatrix;
 import info.szadkowski.matrix.add.game.core.visualizer.GameMatrixVisualizer;
@@ -9,9 +8,9 @@ import info.szadkowski.matrix.add.game.rest.model.Game;
 import info.szadkowski.matrix.add.game.rest.model.GameId;
 import info.szadkowski.matrix.add.game.rest.properties.GameProperties;
 import info.szadkowski.matrix.add.game.rest.service.GameHolderFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,13 +24,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-@RunWith(HierarchicalContextRunner.class)
-public class GameControllerTest {
+class GameControllerTest {
   private GameProperties gameProperties;
   private MockMvc mockMvc;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     gameProperties = new GameProperties();
     gameProperties.setSize(4);
     gameProperties.setExpirationTimeout(Duration.ofDays(1));
@@ -44,9 +42,10 @@ public class GameControllerTest {
             .build();
   }
 
-  public class NoGame {
+  @Nested
+  class NoGame {
     @Test
-    public void shouldCreateGameId() throws Exception {
+    void shouldCreateGameId() throws Exception {
       mockMvc.perform(get("/v1/game"))
               .andExpect(status().isOk())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -54,7 +53,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void shouldReturnError() throws Exception {
+    void shouldReturnError() throws Exception {
       mockMvc.perform(get("/v1/game/notExistingId"))
               .andExpect(status().isNoContent())
               .andExpect(jsonPath("$.reason").value(is("Desired game id was not found")))
@@ -63,25 +62,29 @@ public class GameControllerTest {
     }
   }
 
-  public class ContentBased {
+  @Nested
+  class ContentBased {
     private ObjectMapper mapper;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
       mapper = new ObjectMapper();
     }
 
-    public class NewGame {
+    @Nested
+    class NewGame {
       private String gameId;
 
-      @Before
-      public void setUp() throws Exception {
+      @BeforeEach
+      void setUp() throws Exception {
         gameId = getNewGameId();
       }
 
-      public class Movement {
-        @Before
-        public void newlyCreatedGameShouldHaveTwoFieldsFilled() throws Exception {
+      @Nested
+      class Movement {
+
+        @BeforeEach
+        void newlyCreatedGameShouldHaveTwoFieldsFilled() throws Exception {
           GameMatrixVisualizer visualizer = getVisualizerForUrl(String.format("/v1/game/%s", gameId));
           assertThat(visualizer.visualize()).isEqualTo(
                   "| 2 |   |   |   |\n" +
@@ -91,7 +94,7 @@ public class GameControllerTest {
         }
 
         @Test
-        public void shouldBeAbleToMoveRight() throws Exception {
+        void shouldBeAbleToMoveRight() throws Exception {
           GameMatrixVisualizer visualizer = getVisualizerForUrl(String.format("/v1/game/%s?move=RIGHT", gameId));
           assertThat(visualizer.visualize()).isEqualTo(
                   "| 2 |   |   | 2 |\n" +
@@ -101,7 +104,7 @@ public class GameControllerTest {
         }
 
         @Test
-        public void shouldBeAbleToMoveDown() throws Exception {
+        void shouldBeAbleToMoveDown() throws Exception {
           GameMatrixVisualizer visualizer = getVisualizerForUrl(String.format("/v1/game/%s?move=DOWN", gameId));
           assertThat(visualizer.visualize()).isEqualTo(
                   "| 2 |   |   |   |\n" +
@@ -111,7 +114,7 @@ public class GameControllerTest {
         }
 
         @Test
-        public void shouldBeAbleToMoveLeft() throws Exception {
+        void shouldBeAbleToMoveLeft() throws Exception {
           GameMatrixVisualizer visualizer = getVisualizerForUrl(String.format("/v1/game/%s?move=LEFT", gameId));
           assertThat(visualizer.visualize()).isEqualTo(
                   "| 2 |   |   |   |\n" +
@@ -121,7 +124,7 @@ public class GameControllerTest {
         }
 
         @Test
-        public void shouldBeAbleToMoveUp() throws Exception {
+        void shouldBeAbleToMoveUp() throws Exception {
           GameMatrixVisualizer visualizer = getVisualizerForUrl(String.format("/v1/game/%s?move=UP", gameId));
           assertThat(visualizer.visualize()).isEqualTo(
                   "| 2 |   | 2 |   |\n" +
@@ -143,22 +146,26 @@ public class GameControllerTest {
       }
     }
 
-    public class Expiration {
+    @Nested
+    class Expiration {
+
       @Test
-      public void givenZeroGamesAllowed_willFail() throws Exception {
+      void givenZeroGamesAllowed_willFail() throws Exception {
         gameProperties.setMaxGameCount(0);
         mockMvc.perform(get("/v1/game"))
                 .andExpect(status().isServiceUnavailable());
       }
 
-      public class SingleGameAllowed {
-        @Before
-        public void setUp() throws Exception {
+      @Nested
+      class SingleGameAllowed {
+
+        @BeforeEach
+        void setUp() throws Exception {
           gameProperties.setMaxGameCount(1);
         }
 
         @Test
-        public void givenLongExpireTime_willNotExpireInThatTime() throws Exception {
+        void givenLongExpireTime_willNotExpireInThatTime() throws Exception {
           gameProperties.setExpirationTimeout(Duration.ofDays(1));
           String id = getNewGameId();
           mockMvc.perform(get("/v1/game"))
@@ -171,7 +178,7 @@ public class GameControllerTest {
         }
 
         @Test
-        public void givenShortExpireTime_willExpire() throws Exception {
+        void givenShortExpireTime_willExpire() throws Exception {
           gameProperties.setExpirationTimeout(Duration.ofMillis(0));
           String id = getNewGameId();
           mockMvc.perform(get("/v1/game"))
